@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Code Wanderer - okinawa</title>
+        <link rel="stylesheet" href="https://thecodewanderer.github.io/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://thecodewanderer.github.io/">Code Wanderer</a></h1>
+                <nav><ul>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog-feed.html">Blog Feed</a></li>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog.html">Home</a></li>
+                    <li><a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://thecodewanderer.github.io/daily-statistical-climate-of-okinawa.html">Daily Statistical Climate of Okinawa</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2021-02-04T20:32:00+09:00">
+                Published: Thu 04 February 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/ivanko602.html">ivanko602</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/climate.html">climate</a> <a href="https://thecodewanderer.github.io/tag/github.html">github</a> <a href="https://thecodewanderer.github.io/tag/minipost.html">minipost</a> <a href="https://thecodewanderer.github.io/tag/okinawa.html">okinawa</a> <a href="https://thecodewanderer.github.io/tag/statistics.html">statistics</a> </p>
+</footer><!-- /.post-info --><!-- wp:paragraph -->
+
+<p><strong>R</strong><em>ather than the monthly average, ever wonder what the typical weather is for a given day in a month?</em><br>
+Using Python, I present the statistical mean values for the temperature, rain fall, wind speed, and cloud cover data in <strong>Okinawa</strong> for each day in each month of the year. <strong>Let's see the results first!</strong></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":343,"sizeSlug":"large","linkDestination":"none"} -->
+
+<p><img alt="The beauty of sub-tropics - greater than 20 degrees for most of the year. August is ultra-stable." class="wp-image-343" src="https://codewandererscience.files.wordpress.com/2021/01/okinawa_temperature.png?w=1024"></p>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":342,"sizeSlug":"large","linkDestination":"none"} -->
+
+<p><img alt="Note the spike in June, which corresponds to the rainy season." class="wp-image-342" src="https://codewandererscience.files.wordpress.com/2021/01/okinawa_rain.png?w=1024"></p>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":344,"sizeSlug":"large","linkDestination":"none"} -->
+
+<p><img alt="Note the typhoon season in July and August and how it tends to occur in the first week. The calm period on Sep 10 is very mysterious..." class="wp-image-344" src="https://codewandererscience.files.wordpress.com/2021/01/okinawa_windspeed.png?w=1024"></p>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":340,"sizeSlug":"large","linkDestination":"none"} -->
+
+<p><img alt="Basically it's hard to predict with any certainty for any given day. The monthly average may be the best bet. June is rainy season so it may be cloudier." class="wp-image-340" src="https://codewandererscience.files.wordpress.com/2021/01/okinawa_cloudcover.png?w=1024"></p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>There you have it folks!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":3} -->
+
+<h3>How It's Made</h3>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+
+<p>Here is the procedure to make the above figures in Python</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+
+<ol>
+<li>Copy daily archive data for the given location from https://www.windguru.cz/archive.php</li>
+<li>Save it it in a text file, it will looks something like this:</li>
+</ol>
+<!-- /wp:list -->
+
+<!-- wp:image {"id":352,"sizeSlug":"large","linkDestination":"none"} -->
+
+<p><img alt="" class="wp-image-352" src="https://codewandererscience.files.wordpress.com/2021/02/image.png?w=628"></p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>3. Get the date column by: <code>np.genfromtxt(file, usecols=0,converters = {0: str2date},comments='#')</code> where <code>str2date = lambda x: datetime.strptime(x.decode("utf-8"), '%d.%m.%Y')</code> is used to decode the string to a datetime structure.<br>
+4. Read the rest of the columns by: <code>np.genfromtxt(file,usecols=range(1,17), delimiter="\t",filling_values=0,comments='#')</code> where the missing values are set to 0 (mostly applies to rain data)<br>
+5. Extract all the data for a given day of a given month for every year, e.g. temperature on 09/01/2009\~2020. See <code>getsubdata(DATA,month,period)</code> in <a href="https://github.com/TheCodeWanderer/Blog-Scripts/blob/master/Plot%20Okinawa%20Historical%20Data.py">the code</a>.<br>
+6. Calculate the mean value (in other words, the average or expected value)<br>
+7. Calculate the bounds about the mean value (by taking the average of the values that are greater than the mean for the upper bound and lower than the mean for the lower bound). This approach was used rather than standard deviation since there are few data and data like cloud cover, which is bound between 0% and 100%, does not follow a Gaussian distribution.<br>
+8. Plot the results in an aesthetic way (see <a href="https://github.com/TheCodeWanderer/Blog-Scripts/blob/master/Plot%20Okinawa%20Historical%20Data.py">GitHub code</a>).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:separator {"className":"is-style-wide"} -->
+
+<hr>
+<!-- /wp:separator -->
+
+</p>
+<!-- wp:block {"ref":110} /-->                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

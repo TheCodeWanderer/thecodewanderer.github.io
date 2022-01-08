@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Code Wanderer - MEPA</title>
+        <link rel="stylesheet" href="https://thecodewanderer.github.io/theme/css/main.css" />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://thecodewanderer.github.io/">Code Wanderer</a></h1>
+                <nav><ul>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog-feed.html">Blog Feed</a></li>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog.html">Home</a></li>
+                    <li><a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="https://thecodewanderer.github.io/making-english-phonemic-again.html">Making English Phonemic Again</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2019-11-12T17:08:00+09:00">
+                Published: Tue 12 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/ivanko602.html">ivanko602</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/english.html">English</a> <a href="https://thecodewanderer.github.io/tag/linguistics.html">linguistics</a> <a href="https://thecodewanderer.github.io/tag/mepa.html">MEPA</a> <a href="https://thecodewanderer.github.io/tag/phonemes.html">Phonemes</a> <a href="https://thecodewanderer.github.io/tag/python.html">python</a> <a href="https://thecodewanderer.github.io/tag/zerotohero.html">zerotohero</a> </p>
+</footer><!-- /.post-info --><!-- wp:quote {"className":"is-style-default"} -->
+
+<blockquote>
+<p><em>A </em><em>rough</em><em>-coated, </em><em>dough</em><em>-faced, </em><em>thoughtful ploughman</em><em> strode through the streets of </em><em>Scarborough</em><em>; after falling into a </em><em>slough</em><em>, he </em><em>coughed</em><em> and </em><em>hiccoughed</em><em>.</em></p>
+<p><cite> <strong><em><a href="http://www.tongue-twister.net/en.htm">1st International Collection of Tongue Twisters</a></em>, #253</strong>, <strong>© 1996-2018 Mr. Twister.</strong> </cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph {"align":"center","backgroundColor":"white","textColor":"primary","fontSize":"small"} -->
+
+<p>AH F, OW, AO, AW, OW, AH F, AO F, AH P</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>This sentence exemplifies the ambiguous pronunciation of the "<strong>ough</strong>" in the above words, such as by OW or AH F, which is evident to native speakers but a headache for non-native English learners. This type of ambiguity is a <em>heterophone</em> : same spelling, different pronunciation. For anyone studying English it is soon evident that the written symbols (<em>graphemes</em>) don't always match the spoken sounds (<em>phonemes</em>). This <em>grapheme-phoneme</em> correspondence in the English language is low (turns out it was more <em>phonemic</em> in the past)... What if we can make it <em>perfect</em>?</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","backgroundColor":"white"} -->
+
+<p><strong>Problem: take a phoneme (e.g. OW) and assign it a unique grapheme (e.g. ough).</strong></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>Lets start by getting a dictionary of words and their corresponding phoneme. This data for North American English is available from <strong><a href="http://www.speech.cs.cmu.edu/cgi-bin/cmudict">CMUdict</a></strong> (Carnegie Mellon University Pronouncing Dictionary) which contains over 134,000 words and their pronunciations. Since we do not want to bias the result by archaic or rarely used words (and their corresponding phonemes): only the <a href="https://www.wordfrequency.info/">top 5000 most frequently used words</a> in the English language will be used in the following analysis. Then the top 10 will look like this:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","id":51,"sizeSlug":"medium","className":"is-style-default"} -->
+
+<p>::: {.wp-block-image .is-style-default}
+<img alt="*Getting a hang of reading the phonemes?*" class="wp-image-51" src="https://codewandererscience.files.wordpress.com/2019/11/quick_table.png?w=168">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>Of course at this point one could just replace all the English alphabetical spelling with the phoneme spelling (e.g. <em>I Have To</em> → <em>Ay Hhaev Tuw</em>) but as you can see it becomes too verbose and alien. The ideal is to <strong>reuse the current spelling as compactly as possible</strong>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+
+<h4>Simple example: <em>Hello</em></h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+
+<p>Lets start simple... with linear algebra. Firstly, by taking a word and mapping it into a vector that spans the "alphabet space", i.e. each letter of the alphabet is a dimension of the vector, where the value can be 0 or 1 depending on whether or not the corresponding letter is present or not in the word. For example, in Python code, the word "hello" would have the following vector (starting with <em>a</em> and ending with <em>z</em>):</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","fontSize":"small"} -->
+
+<p><code>word = [0,0,0,0,1,0,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0]</code></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>Note the 26 states of the alphabet space and that despite two instances of the letter "l", it is only indicated once.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>The same approach is then applied to the phonemes in the word. The North American English language has 39 distinct phonemes that can be mapped onto a "Phoneme space" as done above. For example, the phonemes of "hello" are "HH AH L OW" so the vector would look like (starting with AA and ending with ZH):</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":17.5}}} -->
+
+<p><code>phon = [0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0]</code></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>The task now is to solve for a transformation matrix \$latex M\$ that maps vectors from \$latex phon\$ (phonemes space) to \$latex word\$ (alphabet space), which is written as: \$latex phon \times M = word\$. Note that the matrix \$latex M\$ will be of size 39 by 26. For this particular case the solution for \$latex M\$ is highly under-determined since there is not enough information to solve uniquely for all possible letter-phoneme combinations. Nevertheless, a <em>least-squares</em> (<code>numpy.linalg.lstsq</code>; see link for details) method can be applied to determine \$latex M\$, as shown in the following diagram:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","id":68,"width":640,"height":478,"sizeSlug":"large"} -->
+
+<p>::: {.wp-block-image}
+<img alt="Transformation matrix for mapping vectors from phoneme space to alphabet space. The black squares have a value of 0.25 (1/# of unique letters); white are 0." class="wp-image-68" height="478" src="https://codewandererscience.files.wordpress.com/2019/11/hello2hhahlow.png?w=640" width="640">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>As it turns out the above transformation maps satisfies the relation \$latex phon \times M = word\$ perfectly. Unfortunately, it resulted in a somewhat nonsensical result implying that the phoneme AH can be represented equally well by any of the letters. Since the values are fractional it can be thought of as implying the likelihood of a letter given the phoneme. Hence, by this interpretation the <em>transformation</em> matrix can be thought of as a <em>correlation</em> matrix (this shift in perspective is necessary to understand negative values).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+
+<h4>Analysis with 5000 word data-set</h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+
+<p>The next logical step is to then take those aforementioned 5000 words and combine them into a large 5000 x 26 size matrix and extract their corresponding phonemes to get a 5000 x 39 size matrix. Since there is considerably more supplied information than before: applying the least-squares solution will generate the transformation matrix \$latex M\$ that will try to map all the 5000 different word vectors as closely as possible (in the least-squares sense) to the 5000 phoneme vectors. The resulting transformation matrix is shown as follows:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","id":73,"width":640,"height":478,"sizeSlug":"large"} -->
+
+<p>::: {.wp-block-image}
+<img alt="*Clear as a crisp spring morning!*  
+Correlation matrix between the [phonemes (vertical axis)]{style=&quot;text-decoration:underline;&quot;} and [graphemes (horizontal axis).]{style=&quot;text-decoration:underline;&quot;} Red is positive correlation; blue is negative correlation. Note the diagonal dark red line pattern indicating a strong correlation between the phonemes and the graphemes along this line." class="wp-image-73" height="478" src="https://codewandererscience.files.wordpress.com/2019/11/invmat_notitle.png?w=640" width="640">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p><strong>Now we have something with a clear trend</strong> - a dark red line starting from the phoneme B (for the letter b) and ending at W (for w). The dark red color indicates a strong positive correlation between an instance of the phoneme and an instance of the letter. Indeed, the phonemes B, D, F, L, M, P, V, and W are highly correlated with the letters b, d, f, l, m, p, v, w - indicating that this subset is highly phonemic. The contrary case, i.e ambiguous pronunciation, is well exemplified with the letter "o", which correlates across a wide range of phonemes such as (from high to less correlated) OY, AW, OW, AO, AA, then at about 0.3 level UH, UW, SH. Interestingly, there are blue-colored squares that indicate negative correlation. This means that the presence of the phoneme usually means the given letter is absent in the word. The W phoneme has the largest anti-correlation (-0.2) with the letter "c". Thinking of an example: we say work not "worck" but we also say flock not "flok". This example supports the observed anti-correlation.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>Lets assign now the letters that correlate the highest with the given phoneme. In Python, this would simply be to determine the index with the largest value for each row of the phoneme by using <code>numpy.argmax(M, axis=1)</code>. Now for the result!...</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","id":79,"sizeSlug":"large"} -->
+
+<p>::: {.wp-block-image}
+<img alt="Phonemes converted to graphemes. Red colored &quot;o&quot; is the letter attributed to the most amount of phonemes. Green color are letters that are unique to a single phoneme." class="wp-image-79" src="https://codewandererscience.files.wordpress.com/2019/11/phoneme2grapheme.png?w=206">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>Oops! It seems I have reduced the alphabet down to 20 characters... so it is certainly more compact but there are still phonetically ambiguous graphemes present (o, u, g, h, a, i, r, n, s). Anyways, lets see what we get for the tongue-twister we started with:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:quote {"className":"is-style-default"} -->
+
+<blockquote>
+<p><em>U </em><em>ruf</em><em>-cotud, </em><em>do</em><em>-fast, </em><em>hotful plomun</em><em> strod hru hu stryts uv </em><em>scorbro</em><em>; aftr folin intu u </em><em>sluf</em><em>, hy </em><em>coft</em><em> und </em><em>hicupt</em><em>.</em></p>
+<p><cite> <strong><em>Derp Genratr 2000</em>, Cod Wondrr.</strong> </cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph -->
+
+<p><em>25% less characters; 200% more confusion!</em> It's not unmanageable but it still requires recognizing specific patterns to the placement of certain characters to recognize what the pronunciation should be... that "the" becomes "hu" is confusing indeed.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+
+<h4>A better way?</h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+
+<p>Clearly, as I did above, just assigning a single character to a phoneme is bound to be non-unique since there are only 26 characters in the alphabet and 39 phonemes so at least 13 phonemes will share some characters. This suggests that we need to look at more than a single character grapheme to correlate the phoneme with. Such a two character pair with a distinct phoneme is called a digraph. In English, the following are such <a href="https://www.spellingcity.com/digraphs.html">digraphs</a>: ai, ay, ch, ck, ea, ee, ie, kn, oa, oe, oo, ph, sh, ss, th, ue, ui, wh, wr. Using these in our analysis the correlation matrix becomes:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","id":88,"sizeSlug":"large"} -->
+
+<p>::: {.wp-block-image}
+<img alt="*Much bigger!*  
+39 phonemes for 45 graphemes." class="wp-image-88" src="https://codewandererscience.files.wordpress.com/2019/11/invmat_ex_notitle.png?w=640">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>Alas, as we can see above, most of the digraphs are only weakly correlated with the phonemes, i.e. the single characters have stronger correlation. This may also be due to a relatively lower frequency of digraph usage in the words in general. On the other hand the digraph "th" conveniently filled the gap of high correlation for the phonemes TH and DH that a single letter couldn't. In any case, now that we have more graphemes than phonemes it is in principle possible to uniquely assign a grapheme to each phoneme. The algorithm is as follows:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list {"ordered":true} -->
+
+<ol>
+<li>Sort the correlation values from max to min</li>
+<li>Get the <em>row</em>, <em>col</em> index of the highest ranked correlation value,</li>
+<li>The grapheme at the <em>col</em> index assigns it to the phoneme at the <em>row</em> index</li>
+<li>Get the coordinates of the next highest ranked value</li>
+<li>If the <em>row</em> or <em>col</em> index of this value is the same as any previous ones: discard it</li>
+<li>Repeat steps 4 and 5 until all phonemes have been assigned a unique grapheme</li>
+</ol>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+
+<p>In Python, such an algorithm would look like this:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:syntaxhighlighter/code {"language":"python","className":"has-small-font-size"} -->
+
+<div class="has-small-font-size highlight"><pre><span></span><code><span class="n">def</span><span class="w"> </span><span class="n">AssignUniqueGraphemes</span><span class="p">(</span><span class="n">M</span><span class="p">)</span><span class="err">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">M_sorted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">np</span><span class="p">.</span><span class="n">flip</span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="w"> </span><span class="n">axis</span><span class="o">=</span><span class="k">None</span><span class="p">))</span><span class="w"> </span><span class="n">#Flatten</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="mi">2</span><span class="n">D</span><span class="w"> </span><span class="n">matrix</span><span class="w"> </span><span class="n">M</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="k">get</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">indices</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">correlation</span><span class="w"> </span><span class="k">value</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="p">(</span><span class="nf">max</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nf">min</span><span class="p">)</span><span class="w"></span>
+<span class="w">    </span><span class="n">RowCol</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">np</span><span class="p">.</span><span class="n">unravel_index</span><span class="p">(</span><span class="n">M_sorted</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">np</span><span class="p">.</span><span class="k">size</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span><span class="n">np</span><span class="p">.</span><span class="k">size</span><span class="p">(</span><span class="n">M</span><span class="p">,</span><span class="mi">1</span><span class="p">)))</span><span class="w"> </span><span class="n">#Convert</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="k">row</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="n">indices</span><span class="w"></span>
+<span class="w">    </span><span class="n">row_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="w"> </span><span class="n">#Create</span><span class="w"> </span><span class="n">empty</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">appending</span><span class="w"> </span><span class="k">to</span><span class="w"></span>
+<span class="w">    </span><span class="n">col_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="err">[]</span><span class="w"></span>
+<span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="n">ind</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="k">range</span><span class="p">(</span><span class="nf">len</span><span class="p">(</span><span class="n">M_sorted</span><span class="p">))</span><span class="err">:</span><span class="w"> </span><span class="n">#from</span><span class="w"> </span><span class="nf">max</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="nf">min</span><span class="w"> </span><span class="n">correlation</span><span class="w"> </span><span class="k">value</span><span class="p">...</span><span class="w"></span>
+<span class="w">        </span><span class="k">row</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RowCol</span><span class="o">[</span><span class="n">0</span><span class="o">][</span><span class="n">ind</span><span class="o">]</span><span class="w"></span>
+<span class="w">        </span><span class="n">col</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RowCol</span><span class="o">[</span><span class="n">1</span><span class="o">][</span><span class="n">ind</span><span class="o">]</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">row_list</span><span class="w"> </span><span class="ow">and</span><span class="w"> </span><span class="ow">not</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="nl">col_list</span><span class="p">:</span><span class="w"> </span><span class="n">#If</span><span class="w"> </span><span class="n">neither</span><span class="w"> </span><span class="n">col</span><span class="w"> </span><span class="ow">or</span><span class="w"> </span><span class="k">row</span><span class="w"> </span><span class="ow">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="nl">list</span><span class="p">:</span><span class="w"> </span><span class="n">append</span><span class="w"> </span><span class="n">it</span><span class="w"></span>
+<span class="w">            </span><span class="n">row_list</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="k">row</span><span class="p">)</span><span class="w"></span>
+<span class="w">            </span><span class="n">col_list</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">col</span><span class="p">)</span><span class="w"></span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="nf">len</span><span class="p">(</span><span class="n">row_list</span><span class="p">)</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">39</span><span class="err">:</span><span class="w"> </span><span class="n">#If</span><span class="w"> </span><span class="ow">all</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">phonemes</span><span class="w"> </span><span class="k">are</span><span class="w"> </span><span class="nl">added</span><span class="p">:</span><span class="w"> </span><span class="k">break</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">loop</span><span class="w"></span>
+<span class="w">            </span><span class="k">break</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">row_list</span><span class="p">,</span><span class="w"> </span><span class="n">col_list</span><span class="w"></span>
+</code></pre></div>
+
+<!-- /wp:syntaxhighlighter/code -->
+
+<!-- wp:paragraph -->
+
+<p>From this algorithm (see <a href="https://github.com/TheCodeWanderer/Blog-Scripts">my GitHub</a> for the full code) we get:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"align":"center","id":121,"sizeSlug":"large"} -->
+
+<p>::: {.wp-block-image}
+<img alt="The pink circles are where we selected the unique phoneme-grapheme correspondence." class="wp-image-121" src="https://codewandererscience.files.wordpress.com/2019/11/invmat_ex_marked_notitle_v2.png?w=640">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>Seems good! However, as expected, there are some strange assignments, such as AA → ck, ER → wh, and basically all the other ones where there is weak correlation (most of the digraphs). This can be better seen in the following plot:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":94,"width":815,"height":327,"sizeSlug":"large"} -->
+
+<p><img alt="Correlation decreases as we enter the digraph territory..." class="wp-image-94" height="327" src="https://codewandererscience.files.wordpress.com/2019/11/corrvsphoneme-1.png" width="815"></p>
+<!-- /wp:image -->
+
+<!-- wp:paragraph -->
+
+<p>As we can see above, the grapheme assignment seems reasonable and then it stops making sense after Z → z and we get something strange like NG → k. Note that I may have not included all possible digraphs (some sources indicate other letter combinations) such as "ng", which would very likely result in the assignment of NG → ng thus resolving this case. Additionally, there are trigraphs (e.g. tch, igh) and even quadgraphs (e.g. ough, eigh. But for extending this list one should be careful whether or not the letter combinations actually produce a distinct phoneme or it is just two separate phonemes (this case is called a <em>blend</em>).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>Just for fun lets use the above assignment to see what the tongue twister looks like:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:quote -->
+
+<blockquote>
+<p>Ph <strong>rphf</strong>-coatphd, <strong>doa</strong>-faisst, <strong>eaaytfphl</strong> <strong>plumphn</strong> sstroad earue thph sstrytss phv <strong>Sscckrbwhoa</strong>; aftwh fcklxk xntue ph <strong>sslphf</strong>, hy <strong>cayft</strong> phnd <strong>hxcphpt</strong>.</p>
+<p><cite><strong><em>Derp Jenwhaitwh 2000</em>, Coad Wckndwhwh</strong></cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph -->
+
+<p>...right. The whole AH → ph throws a monkey wrench into the whole thing. Also the ER → wh makes it sound like a Boston accent... at least in my mind. The IH → x makes <strong>hxcphtp</strong> seem like a name of a Lovecraftian deity (e.g. Cxaxukluth).</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:heading {"level":4} -->
+
+<h4>What's next?</h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+
+<p>The limitation of the above approach of using a correlation matrix is that we have to predetermine what the graphemes could be such as whether or not there are digraphs or multigraphs (more than 2 characters). This could be arbitrarily extended but I want to reduce the usage of multiple character length graphemes as much as possible. Rather than manually trying different combinations: an approach to resolve all the likely graphemes could be similar to <strong>deciphering a secret message</strong>. But we'll leave that for next time...!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group -->
+
+<p>::: {.wp-block-group}
+::: {.wp-block-group__inner-container}</p>
+<!-- wp:image {"align":"center","id":21,"sizeSlug":"thumbnail","className":"is-style-circle-mask"} -->
+<p></p>
+::: {.wp-block-image .is-style-circle-mask}
+<img alt="***For the code used above see my GitHub below!  
+Also my YouTube channel for AI related projects.***" class="wp-image-21" src="https://codewandererscience.files.wordpress.com/2019/11/cropped-1572929656-130.54.130.237-1.png?w=150">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:social-links {"align":"center"} -->
+
+<!-- /wp:social-links -->
+<p>:::
+:::</p>
+<!-- /wp:group -->
+
+<!-- wp:group -->
+
+<p>::: {.wp-block-group}
+::: {.wp-block-group__inner-container}
+:::
+:::</p>
+<!-- /wp:group -->                </article>
+            </aside><!-- /#featured -->
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>

@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="english">
+<head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="generator" content="Pelican" />
+        <title>Shuffling segments inside a video clip</title>
+        <link rel="stylesheet" href="https://thecodewanderer.github.io/theme/css/main.css" />
+        <meta name="description" content="Ever wanted to watch all your favorite 300 scenes in a random order? Now you can with Python! First, get the moviepy package. Then we can proceed..." />
+</head>
+
+<body id="index" class="home">
+        <header id="banner" class="body">
+                <h1><a href="https://thecodewanderer.github.io/">Code Wanderer</a></h1>
+                <nav><ul>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog-feed.html">Blog Feed</a></li>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog.html">Home</a></li>
+                    <li class="active"><a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a></li>
+                </ul></nav>
+        </header><!-- /#banner -->
+<section id="content" class="body">
+  <article>
+    <header>
+      <h1 class="entry-title">
+        <a href="https://thecodewanderer.github.io/shuffling-segments-inside-a-video-clip.html" rel="bookmark"
+           title="Permalink to Shuffling segments inside a video clip">Shuffling segments inside a video clip</a></h1>
+    </header>
+
+    <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2022-01-01T11:51:00+09:00">
+                Published: Sat 01 January 2022
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/ivanko602.html">ivanko602</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/editing.html">editing</a> <a href="https://thecodewanderer.github.io/tag/moviepy.html">moviepy</a> <a href="https://thecodewanderer.github.io/tag/python.html">python</a> <a href="https://thecodewanderer.github.io/tag/quick-article.html">quick article</a> <a href="https://thecodewanderer.github.io/tag/randomize-clips.html">randomize clips</a> <a href="https://thecodewanderer.github.io/tag/shuffle.html">shuffle</a> <a href="https://thecodewanderer.github.io/tag/video-editing.html">video editing</a> <a href="https://thecodewanderer.github.io/tag/youtube.html">youtube</a> </p>
+</footer><!-- /.post-info -->      <!-- wp:paragraph -->
+
+<p>Ever wanted to watch all your favorite <em>300</em> scenes in a random order? Now you can with <a href="https://www.python.org/">Python</a>! First, get the <a href="https://pypi.org/project/moviepy/"><em>moviepy</em></a> package. Then we can proceed to learn by example:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>Say we have a video file called '10s count.avi' that shows a counter incrementing from 0 to 9 every second.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:embed {"url":"https://youtu.be/eJ5VLO13RGA","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-4-3 wp-has-aspect-ratio"} -->
+
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-4-3 wp-has-aspect-ratio">
+::: {.wp-block-embed__wrapper}
+https://youtu.be/eJ5VLO13RGA
+:::
+
+<figcaption>
+10 seconds counter video
+
+</figcaption>
+</figure>
+<!-- /wp:embed -->
+
+<!-- wp:paragraph -->
+
+<p>We are interested in shuffling the video clip so that:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+
+<ul>
+<li>The scene with number 5 is omitted</li>
+<li>9 shows at the very end</li>
+<li>the rest is shuffled randomly</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+
+<p>In Python create a list of two-element tuples where the first and second element indicates the start and end times (in seconds) of the scene:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+
+<div class="highlight"><pre><span></span><code>startstop = [(0, 1), (1, 2), (2, 4), (6, 7), (8, 9), (9, 10)] 
+</code></pre></div>
+
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+
+<p>Create a new variable omitting the last tuple of the list <code>startstop_s = startstop[:-1]</code>, import the <em>random</em> package then shuffle the new list <code>random.shuffle(startstop_s)</code>, and finally append back the omitted tuple <code>startstop_s.append(startstop[-1])</code>. After these operations we get the following list of tuples in <code>startstop_s</code> defining our new movie file:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+
+<div class="highlight"><pre><span></span><code>[(6, 7), (0, 1), (8, 9), (2, 4), (1, 2), (9, 10)]
+</code></pre></div>
+
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+
+<p>Next we need to use <em>moviepy</em> to make our new clip using the <em><a href="https://zulko.github.io/moviepy/ref/VideoClip/VideoClip.html#moviepy.video.VideoClip.VideoClip.subclip">subclip</a></em>method, which extracts a portion of a video given the start and ending times, and <em>concatenate_videoclips</em> method, which does what it says. The following three lines of codes does the job:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+
+<div class="highlight"><pre><span></span><code><span class="nv">clip</span> <span class="o">=</span> <span class="nv">moviepy</span>.<span class="nv">editor</span>.<span class="nv">VideoFileClip</span><span class="ss">(</span><span class="nv">filepath</span><span class="ss">)</span> #<span class="nv">Load</span> <span class="nv">video</span> <span class="nv">from</span> <span class="nv">filepath</span> <span class="nv">into</span> <span class="nv">Python</span>
+<span class="nv">output</span><span class="o">=</span>[<span class="nv">clip</span>.<span class="nv">subclip</span><span class="ss">(</span><span class="o">*</span><span class="nv">ss</span><span class="ss">)</span> <span class="k">for</span> <span class="nv">ss</span> <span class="nv">in</span> <span class="nv">startstop_s</span>] #<span class="nv">Make</span> <span class="nv">new</span> <span class="nv">video</span> <span class="nv">clip</span> <span class="nv">object</span> <span class="nv">with</span> <span class="nv">shuffled</span> <span class="nv">order</span>
+<span class="nv">moviepy</span>.<span class="nv">editor</span>.<span class="nv">concatenate_videoclips</span><span class="ss">(</span><span class="nv">output</span><span class="ss">)</span>.<span class="nv">write_videofile</span><span class="ss">(</span><span class="nv">filepath</span>.<span class="nv">split</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">.</span><span class="s1">&#39;</span><span class="ss">)</span>[<span class="mi">0</span>] <span class="o">+</span> <span class="s1">&#39;</span><span class="s">_shuffle.mp4</span><span class="s1">&#39;</span>,<span class="nv">preset</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">ultrafast</span><span class="s1">&#39;</span><span class="ss">)</span> #<span class="nv">Save</span> <span class="nv">video</span> <span class="nv">clip</span> <span class="nv">to</span> <span class="nv">file</span>
+</code></pre></div>
+
+<!-- /wp:code -->
+
+<!-- wp:embed {"url":"https://youtu.be/fkN7grXycwk","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-4-3 wp-has-aspect-ratio"} -->
+
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-4-3 wp-has-aspect-ratio">
+::: {.wp-block-embed__wrapper}
+https://youtu.be/fkN7grXycwk
+:::
+
+<figcaption>
+Shuffled version of the 10 seconds counter videoIt
+
+</figcaption>
+</figure>
+<!-- /wp:embed -->
+
+<!-- wp:paragraph -->
+
+<p><strong>... and it's done!</strong> Now we have a file called '10s count_shuffle.mp4' as shown above (yes, it was encoded from lossless to h264). The Python script can be accessed <a href="https://github.com/TheCodeWanderer/Blog-Scripts/blob/master/Shuffle%20Video%20Clip.py">here</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group -->
+
+<p>::: {.wp-block-group}</p>
+<!-- wp:image {"align":"center","id":21,"sizeSlug":"thumbnail","className":"is-style-circle-mask"} -->
+<p></p>
+::: {.wp-block-image .is-style-circle-mask}
+<img alt="***For the code used above see my GitHub below!  
+Also my YouTube channel for AI related projects.***" class="wp-image-21" src="https://codewandererscience.files.wordpress.com/2019/11/cropped-1572929656-130.54.130.237-1.png?w=150">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:social-links {"align":"center"} -->
+
+<!-- /wp:social-links -->
+<p>:::</p>
+<!-- /wp:group -->
+
+<!-- wp:group -->
+
+<p>::: {.wp-block-group}
+:::</p>
+<!-- /wp:group -->
+    </div><!-- /.entry-content -->
+
+  </article>
+</section>
+        <section id="extras" class="body">
+                <div class="blogroll">
+                        <h2>links</h2>
+                        <ul>
+                            <li><a href="https://getpelican.com/">Pelican</a></li>
+                            <li><a href="https://www.python.org/">Python.org</a></li>
+                            <li><a href="https://palletsprojects.com/p/jinja/">Jinja2</a></li>
+                            <li><a href="#">You can modify those links in your config file</a></li>
+                        </ul>
+                </div><!-- /.blogroll -->
+                <div class="social">
+                        <h2>social</h2>
+                        <ul>
+
+                            <li><a href="#">You can add links in your config file</a></li>
+                            <li><a href="#">Another social link</a></li>
+                        </ul>
+                </div><!-- /.social -->
+        </section><!-- /#extras -->
+
+        <footer id="contentinfo" class="body">
+                <address id="about" class="vcard body">
+                Proudly powered by <a href="https://getpelican.com/">Pelican</a>, which takes great advantage of <a href="https://www.python.org/">Python</a>.
+                </address><!-- /#about -->
+
+                <p>The theme is by <a href="https://www.smashingmagazine.com/2009/08/designing-a-html-5-layout-from-scratch/">Smashing Magazine</a>, thanks!</p>
+        </footer><!-- /#contentinfo -->
+
+</body>
+</html>
