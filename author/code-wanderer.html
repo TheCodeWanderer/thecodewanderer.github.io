@@ -12,25 +12,316 @@
         <header id="banner" class="body">
                 <h1><a href="https://thecodewanderer.github.io/">Code Wanderer</a></h1>
                 <nav><ul>
-                    <li><a href="https://thecodewanderer.github.io/category/review.html">Review</a></li>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog-feed.html">Blog Feed</a></li>
+                    <li><a href="https://thecodewanderer.github.io/pages/blog.html">Home</a></li>
+                    <li><a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a></li>
                 </ul></nav>
         </header><!-- /#banner -->
 
             <aside id="featured" class="body">
                 <article>
-                    <h1 class="entry-title"><a href="https://thecodewanderer.github.io/my-first-review.html">My First Review</a></h1>
+                    <h1 class="entry-title"><a href="https://thecodewanderer.github.io/shuffling-segments-inside-a-video-clip.html">Shuffling segments inside a video clip</a></h1>
 <footer class="post-info">
-        <abbr class="published" title="2010-12-03T10:20:00+09:00">
-                Published: Fri 03 December 2010
+        <abbr class="published" title="2022-01-01T11:51:00+09:00">
+                Published: Sat 01 January 2022
         </abbr>
 
         <address class="vcard author">
                 By                         <a class="url fn" href="https://thecodewanderer.github.io/author/code-wanderer.html">Code Wanderer</a>
         </address>
-<p>In <a href="https://thecodewanderer.github.io/category/review.html">Review</a>.</p>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/editing.html">editing</a> <a href="https://thecodewanderer.github.io/tag/moviepy.html">moviepy</a> <a href="https://thecodewanderer.github.io/tag/python.html">python</a> <a href="https://thecodewanderer.github.io/tag/quick-article.html">quick article</a> <a href="https://thecodewanderer.github.io/tag/randomize-clips.html">randomize clips</a> <a href="https://thecodewanderer.github.io/tag/shuffle.html">shuffle</a> <a href="https://thecodewanderer.github.io/tag/video-editing.html">video editing</a> <a href="https://thecodewanderer.github.io/tag/youtube.html">youtube</a> </p>
+</footer><!-- /.post-info --><!-- wp:paragraph -->
 
-</footer><!-- /.post-info --><p>Following is a review of my favorite mechanical keyboard.</p>                </article>
+<p>Ever wanted to watch all your favorite <em>300</em> scenes in a random order? Now you can with <a href="https://www.python.org/">Python</a>! First, get the <a href="https://pypi.org/project/moviepy/"><em>moviepy</em></a> package. Then we can proceed to learn by example:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>Say we have a video file called '10s count.avi' that shows a counter incrementing from 0 to 9 every second.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:embed {"url":"https://youtu.be/eJ5VLO13RGA","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-4-3 wp-has-aspect-ratio"} -->
+
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-4-3 wp-has-aspect-ratio">
+::: {.wp-block-embed__wrapper}
+https://youtu.be/eJ5VLO13RGA
+:::
+
+<figcaption>
+10 seconds counter video
+
+</figcaption>
+</figure>
+<!-- /wp:embed -->
+
+<!-- wp:paragraph -->
+
+<p>We are interested in shuffling the video clip so that:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:list -->
+
+<ul>
+<li>The scene with number 5 is omitted</li>
+<li>9 shows at the very end</li>
+<li>the rest is shuffled randomly</li>
+</ul>
+<!-- /wp:list -->
+
+<!-- wp:paragraph -->
+
+<p>In Python create a list of two-element tuples where the first and second element indicates the start and end times (in seconds) of the scene:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+
+<div class="highlight"><pre><span></span><code>startstop = [(0, 1), (1, 2), (2, 4), (6, 7), (8, 9), (9, 10)] 
+</code></pre></div>
+
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+
+<p>Create a new variable omitting the last tuple of the list <code>startstop_s = startstop[:-1]</code>, import the <em>random</em> package then shuffle the new list <code>random.shuffle(startstop_s)</code>, and finally append back the omitted tuple <code>startstop_s.append(startstop[-1])</code>. After these operations we get the following list of tuples in <code>startstop_s</code> defining our new movie file:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+
+<div class="highlight"><pre><span></span><code>[(6, 7), (0, 1), (8, 9), (2, 4), (1, 2), (9, 10)]
+</code></pre></div>
+
+<!-- /wp:code -->
+
+<!-- wp:paragraph -->
+
+<p>Next we need to use <em>moviepy</em> to make our new clip using the <em><a href="https://zulko.github.io/moviepy/ref/VideoClip/VideoClip.html#moviepy.video.VideoClip.VideoClip.subclip">subclip</a></em>method, which extracts a portion of a video given the start and ending times, and <em>concatenate_videoclips</em> method, which does what it says. The following three lines of codes does the job:</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:code -->
+
+<div class="highlight"><pre><span></span><code><span class="nv">clip</span> <span class="o">=</span> <span class="nv">moviepy</span>.<span class="nv">editor</span>.<span class="nv">VideoFileClip</span><span class="ss">(</span><span class="nv">filepath</span><span class="ss">)</span> #<span class="nv">Load</span> <span class="nv">video</span> <span class="nv">from</span> <span class="nv">filepath</span> <span class="nv">into</span> <span class="nv">Python</span>
+<span class="nv">output</span><span class="o">=</span>[<span class="nv">clip</span>.<span class="nv">subclip</span><span class="ss">(</span><span class="o">*</span><span class="nv">ss</span><span class="ss">)</span> <span class="k">for</span> <span class="nv">ss</span> <span class="nv">in</span> <span class="nv">startstop_s</span>] #<span class="nv">Make</span> <span class="nv">new</span> <span class="nv">video</span> <span class="nv">clip</span> <span class="nv">object</span> <span class="nv">with</span> <span class="nv">shuffled</span> <span class="nv">order</span>
+<span class="nv">moviepy</span>.<span class="nv">editor</span>.<span class="nv">concatenate_videoclips</span><span class="ss">(</span><span class="nv">output</span><span class="ss">)</span>.<span class="nv">write_videofile</span><span class="ss">(</span><span class="nv">filepath</span>.<span class="nv">split</span><span class="ss">(</span><span class="s1">&#39;</span><span class="s">.</span><span class="s1">&#39;</span><span class="ss">)</span>[<span class="mi">0</span>] <span class="o">+</span> <span class="s1">&#39;</span><span class="s">_shuffle.mp4</span><span class="s1">&#39;</span>,<span class="nv">preset</span><span class="o">=</span><span class="s1">&#39;</span><span class="s">ultrafast</span><span class="s1">&#39;</span><span class="ss">)</span> #<span class="nv">Save</span> <span class="nv">video</span> <span class="nv">clip</span> <span class="nv">to</span> <span class="nv">file</span>
+</code></pre></div>
+
+<!-- /wp:code -->
+
+<!-- wp:embed {"url":"https://youtu.be/fkN7grXycwk","type":"video","providerNameSlug":"youtube","responsive":true,"className":"wp-embed-aspect-4-3 wp-has-aspect-ratio"} -->
+
+<figure class="wp-block-embed is-type-video is-provider-youtube wp-block-embed-youtube wp-embed-aspect-4-3 wp-has-aspect-ratio">
+::: {.wp-block-embed__wrapper}
+https://youtu.be/fkN7grXycwk
+:::
+
+<figcaption>
+Shuffled version of the 10 seconds counter videoIt
+
+</figcaption>
+</figure>
+<!-- /wp:embed -->
+
+<!-- wp:paragraph -->
+
+<p><strong>... and it's done!</strong> Now we have a file called '10s count_shuffle.mp4' as shown above (yes, it was encoded from lossless to h264). The Python script can be accessed <a href="https://github.com/TheCodeWanderer/Blog-Scripts/blob/master/Shuffle%20Video%20Clip.py">here</a>.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group -->
+
+<p>::: {.wp-block-group}</p>
+<!-- wp:image {"align":"center","id":21,"sizeSlug":"thumbnail","className":"is-style-circle-mask"} -->
+<p></p>
+::: {.wp-block-image .is-style-circle-mask}
+<img alt="***For the code used above see my GitHub below!  
+Also my YouTube channel for AI related projects.***" class="wp-image-21" src="https://codewandererscience.files.wordpress.com/2019/11/cropped-1572929656-130.54.130.237-1.png?w=150">
+:::</p>
+<!-- /wp:image -->
+
+<!-- wp:social-links {"align":"center"} -->
+
+<!-- /wp:social-links -->
+<p>:::</p>
+<!-- /wp:group -->
+
+<!-- wp:group -->
+
+<p>::: {.wp-block-group}
+:::</p>
+<!-- /wp:group -->                </article>
             </aside><!-- /#featured -->
+                <section id="content" class="body">
+                    <h1>Other articles</h1>
+                    <hr />
+                    <ol id="posts-list" class="hfeed">
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://thecodewanderer.github.io/daily-statistical-climate-of-okinawa.html" rel="bookmark"
+                           title="Permalink to Daily Statistical Climate of Okinawa">Daily Statistical Climate of Okinawa</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2021-02-04T20:32:00+09:00">
+                Published: Thu 04 February 2021
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/code-wanderer.html">Code Wanderer</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/climate.html">climate</a> <a href="https://thecodewanderer.github.io/tag/github.html">github</a> <a href="https://thecodewanderer.github.io/tag/minipost.html">minipost</a> <a href="https://thecodewanderer.github.io/tag/okinawa.html">okinawa</a> <a href="https://thecodewanderer.github.io/tag/statistics.html">statistics</a> </p>
+</footer><!-- /.post-info -->                <!-- wp:paragraph -->
+
+<p><strong>R</strong><em>ather than the monthly average, ever wonder what the typical weather is for a given day in a month?</em><br>
+Using Python, I present the statistical mean values for the temperature, rain fall, wind speed, and cloud cover data in <strong>Okinawa</strong> for each day in each month of the year …</p>
+                <a class="readmore" href="https://thecodewanderer.github.io/daily-statistical-climate-of-okinawa.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://thecodewanderer.github.io/sofalize-this-downmixing-multi-channel-audio-to-stereo.html" rel="bookmark"
+                           title="Permalink to SOFAlize This! Downmixing multi-channel audio to stereo">SOFAlize This! Downmixing multi-channel audio to stereo</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2020-05-03T21:26:00+09:00">
+                Published: Sun 03 May 2020
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/code-wanderer.html">Code Wanderer</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/ac3.html">.ac3</a> <a href="https://thecodewanderer.github.io/tag/acoustics.html">acoustics</a> <a href="https://thecodewanderer.github.io/tag/downmixing.html">downmixing</a> <a href="https://thecodewanderer.github.io/tag/ffmpeg.html">ffmpeg</a> <a href="https://thecodewanderer.github.io/tag/filtering.html">filtering</a> <a href="https://thecodewanderer.github.io/tag/head.html">head</a> <a href="https://thecodewanderer.github.io/tag/home-theater.html">home theater</a> <a href="https://thecodewanderer.github.io/tag/hrtf.html">HRTF</a> <a href="https://thecodewanderer.github.io/tag/mvp.html">mvp</a> <a href="https://thecodewanderer.github.io/tag/niche.html">niche</a> <a href="https://thecodewanderer.github.io/tag/sofalize.html">sofalize</a> <a href="https://thecodewanderer.github.io/tag/surround-sound.html">surround sound</a> <a href="https://thecodewanderer.github.io/tag/transfer-function.html">transfer function</a> </p>
+</footer><!-- /.post-info -->                <!-- wp:quote {"align":"center"} -->
+
+<blockquote>
+<p>...*it was the look on their faces... *</p>
+<p><cite><strong>Robert Angier</strong></cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:heading {"level":4} -->
+
+<h4><em>The Pledge</em></h4>
+<!-- /wp:heading -->
+
+<!-- wp:paragraph -->
+
+<p>I tried playing some media the other day and noticed that <strong>some audio is missing or very quiet</strong>. I realized that the <strong>audio was 5.1 channels</strong> rather than in stereo. As you may know, <strong>5.1 refers to …</strong></p>
+                <a class="readmore" href="https://thecodewanderer.github.io/sofalize-this-downmixing-multi-channel-audio-to-stereo.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://thecodewanderer.github.io/simple-model-of-real-world-data-in-python.html" rel="bookmark"
+                           title="Permalink to Simple model of real-world data in Python">Simple model of real-world data in Python</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2020-02-25T12:25:00+09:00">
+                Published: Tue 25 February 2020
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/code-wanderer.html">Code Wanderer</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/coronavirus.html">coronavirus</a> <a href="https://thecodewanderer.github.io/tag/covid-19.html">covid-19</a> <a href="https://thecodewanderer.github.io/tag/differential-equation.html">differential equation</a> <a href="https://thecodewanderer.github.io/tag/fitting.html">fitting</a> <a href="https://thecodewanderer.github.io/tag/model.html">model</a> <a href="https://thecodewanderer.github.io/tag/normal-distribution.html">normal distribution</a> <a href="https://thecodewanderer.github.io/tag/python.html">python</a> <a href="https://thecodewanderer.github.io/tag/real-data.html">real data</a> </p>
+</footer><!-- /.post-info -->                <!-- wp:quote {"align":"center"} -->
+
+<blockquote>
+<p><em>The purpose of computation is insight, not numbers.</em></p>
+<p><cite><a href="https://en.wikipedia.org/wiki/Richard_Hamming"><strong>Richard Hamming</strong></a></cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph -->
+
+<p>In this post I will show you how to make a simple (yet potentially insightful) model of a complex phenomenon observed in the real-world. To such end, I will use the recent <a href="https://www.worldometers.info/coronavirus/">COVID-19 Coronavirus Outbreak</a> for our modelling exercise. But …</p>
+                <a class="readmore" href="https://thecodewanderer.github.io/simple-model-of-real-world-data-in-python.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://thecodewanderer.github.io/riders-of-the-lost-track-geotagged-photos-to-gpx-route.html" rel="bookmark"
+                           title="Permalink to Riders of the Lost Track: Geotagged photos to GPX route">Riders of the Lost Track: Geotagged photos to GPX route</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2020-02-03T10:44:00+09:00">
+                Published: Mon 03 February 2020
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/code-wanderer.html">Code Wanderer</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/exiftool.html">exiftool</a> <a href="https://thecodewanderer.github.io/tag/geotagged.html">geotagged</a> <a href="https://thecodewanderer.github.io/tag/gps.html">GPS</a> <a href="https://thecodewanderer.github.io/tag/gpx.html">GPX</a> <a href="https://thecodewanderer.github.io/tag/lifehack.html">lifehack</a> <a href="https://thecodewanderer.github.io/tag/python.html">python</a> <a href="https://thecodewanderer.github.io/tag/routes.html">routes</a> <a href="https://thecodewanderer.github.io/tag/tracks.html">tracks</a> <a href="https://thecodewanderer.github.io/tag/waypoints.html">waypoints</a> </p>
+</footer><!-- /.post-info -->                <!-- wp:quote -->
+
+<blockquote>
+<p>Tunnels. Why'd it have to be tunnels?</p>
+<p><cite><strong><em>Americana Jones</em></strong> -- while cycling</cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph {"align":"center"} -->
+
+<p><em>You just returned from your intrepid adventure;<br>
+whilst recovering your aching legs in your jaccuzi,<br>
+you take a deep whiff of the 1936 oak aged whisky<br>
+that you have reserved for such a special occasion.<br>
+You feel the tiredness …</em></p>
+                <a class="readmore" href="https://thecodewanderer.github.io/riders-of-the-lost-track-geotagged-photos-to-gpx-route.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+
+            <li><article class="hentry">
+                <header>
+                    <h1><a href="https://thecodewanderer.github.io/making-english-phonemic-again.html" rel="bookmark"
+                           title="Permalink to Making English Phonemic Again">Making English Phonemic Again</a></h1>
+                </header>
+
+                <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2019-11-12T17:08:00+09:00">
+                Published: Tue 12 November 2019
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="https://thecodewanderer.github.io/author/code-wanderer.html">Code Wanderer</a>
+        </address>
+<p>In <a href="https://thecodewanderer.github.io/category/uncategorized.html">Uncategorized</a>.</p>
+<p>tags: <a href="https://thecodewanderer.github.io/tag/english.html">English</a> <a href="https://thecodewanderer.github.io/tag/linguistics.html">linguistics</a> <a href="https://thecodewanderer.github.io/tag/mepa.html">MEPA</a> <a href="https://thecodewanderer.github.io/tag/phonemes.html">Phonemes</a> <a href="https://thecodewanderer.github.io/tag/python.html">python</a> <a href="https://thecodewanderer.github.io/tag/zerotohero.html">zerotohero</a> </p>
+</footer><!-- /.post-info -->                <!-- wp:quote {"className":"is-style-default"} -->
+
+<blockquote>
+<p><em>A </em><em>rough</em><em>-coated, </em><em>dough</em><em>-faced, </em><em>thoughtful ploughman</em><em> strode through the streets of </em><em>Scarborough</em><em>; after falling into a </em><em>slough</em><em>, he </em><em>coughed</em><em> and </em><em>hiccoughed</em><em>.</em></p>
+<p><cite> <strong><em><a href="http://www.tongue-twister.net/en.htm">1st International Collection of Tongue Twisters</a></em>, #253</strong>, <strong>© 1996-2018 Mr. Twister.</strong> </cite></p>
+</blockquote>
+<!-- /wp:quote -->
+
+<!-- wp:paragraph {"align":"center","backgroundColor":"white","textColor":"primary","fontSize":"small"} -->
+
+<p>AH F, OW, AO, AW, OW, AH F, AO F, AH P</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+<p>This sentence exemplifies the ambiguous pronunciation …</p>
+                <a class="readmore" href="https://thecodewanderer.github.io/making-english-phonemic-again.html">read more</a>
+                </div><!-- /.entry-content -->
+            </article></li>
+                </ol><!-- /#posts-list -->
+                </section><!-- /#content -->
         <section id="extras" class="body">
                 <div class="blogroll">
                         <h2>links</h2>
